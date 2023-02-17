@@ -26,6 +26,7 @@ class Mem(models.Model):
         auto_now_add=True,
     )
     likes = models.IntegerField(
+        default=0,
         verbose_name='Количество',
     )
 
