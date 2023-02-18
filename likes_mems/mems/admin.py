@@ -1,3 +1,14 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
-# Register your models here.
+from .models import Mem
+
+
+@admin.register(Mem)
+class MemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'get_image', 'author', 'pub_date', 'likes')
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="100" height="110"')
+
+    get_image.short_description = 'Изображение'

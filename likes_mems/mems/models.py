@@ -5,6 +5,7 @@ from likes_mems.conf import MAX_LEN_MEM_NAME
 
 User = get_user_model()
 
+
 class Mem(models.Model):
     name = models.CharField(
         verbose_name='Название мема',
@@ -13,7 +14,7 @@ class Mem(models.Model):
     )
     image = models.ImageField(
         verbose_name='Изображение мема',
-        upload_to='recipes/images',
+        upload_to='images/',
     )
     author = models.ForeignKey(
         User,
@@ -27,13 +28,13 @@ class Mem(models.Model):
     )
     likes = models.IntegerField(
         default=0,
-        verbose_name='Количество',
+        verbose_name='Количество лайков',
     )
 
     class Meta:
         verbose_name = 'Мем'
         verbose_name_plural = 'Мемы'
-        ordering = ('-pub_date',)
+        ordering = ('pub_date',)
 
     def __str__(self):
         return f'{self.name}. Автор: {self.author.username}. Лайки: {self.likes}'
