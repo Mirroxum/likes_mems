@@ -52,7 +52,7 @@ class LikeViewSet(APIView):
 
     def get(self, request, pk):
         user = self.request.user
-        mem = Mem.objects.get(pk=pk)
+        mem = get_object_or_404(Mem, pk=pk)
         try:
             old_mark = LikeDislike.objects.get(user=user, mem=mem)
             if old_mark.vote == 1:
@@ -73,7 +73,7 @@ class DisLikeViewSet(APIView):
 
     def get(self, request, pk):
         user = self.request.user
-        mem = Mem.objects.get(pk=pk)
+        mem = get_object_or_404(Mem, pk=pk)
         try:
             old_mark = LikeDislike.objects.get(user=user, mem=mem)
             if old_mark.vote == -1:
