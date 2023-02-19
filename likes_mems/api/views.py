@@ -39,8 +39,12 @@ class MemSkipViewSet(APIView):
         current_mem = get_object_or_404(Mem, pk=pk)
         current_pub_date = current_mem.pub_date
         to_mem = Mem.objects.filter(pub_date__gt=current_pub_date).first()
-        return HttpResponseRedirect(
-            redirect_to=reverse('memdetail', kwargs={'pk': to_mem.pk}))
+        if to_mem:
+            return HttpResponseRedirect(
+                redirect_to=reverse('memdetail', kwargs={'pk': to_mem.pk}))
+        else:
+            return HttpResponseRedirect(
+                redirect_to=reverse('mem'))
 
 
 class LikeViewSet(APIView):
