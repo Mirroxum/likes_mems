@@ -6,9 +6,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponseRedirect
+from django.db.models import Sum, F
 
 from mems.models import Mem, LikeDislike
 from .serializers import MemSerializer
+from utils.random_chance import is_promote
+from likes_mems.conf import CHANCE
 
 
 User = get_user_model()
@@ -17,10 +20,10 @@ User = get_user_model()
 class MemViewSet(APIView):
 
     def get(self, request):
-        mem = Mem.objects.select_related('author').first()
-        pk = mem.pk
+        to_mem = Mem.objects.annotate(sum_votes=Sum(
+            F('likesdislikes__vote'))).order_by('sum_votes', '?').first()
         return HttpResponseRedirect(
-            redirect_to=reverse('memdetail', kwargs={'pk': pk}))
+            redirect_to=reverse('memdetail', kwargs={'pk': to_mem.pk}))
 
 
 class MemDetailViewSet(APIView):
@@ -37,8 +40,11 @@ class MemSkipViewSet(APIView):
 
     def get(self, request, pk):
         current_mem = get_object_or_404(Mem, pk=pk)
-        current_pub_date = current_mem.pub_date
-        to_mem = Mem.objects.filter(pub_date__gt=current_pub_date).first()
+        if is_promote(CHANCE) and not current_mem.is_favorite:
+            to_mem = Mem.objects.filter(is_favorite=True).order_by('?').first()
+        else:
+            to_mem = Mem.objects.annotate(sum_votes=Sum(
+                F('likesdislikes__vote'))).order_by('sum_votes', '?').first()
         return HttpResponseRedirect(
             redirect_to=reverse('memdetail', kwargs={'pk': to_mem.pk}))
 
@@ -48,7 +54,7 @@ class LikeViewSet(APIView):
 
     def get(self, request, pk):
         user = self.request.user
-        mem = Mem.objects.get(pk=pk)
+        mem = get_object_or_404(Mem, pk=pk)
         try:
             old_mark = LikeDislike.objects.get(user=user, mem=mem)
             if old_mark.vote == 1:
@@ -69,7 +75,7 @@ class DisLikeViewSet(APIView):
 
     def get(self, request, pk):
         user = self.request.user
-        mem = Mem.objects.get(pk=pk)
+        mem = get_object_or_404(Mem, pk=pk)
         try:
             old_mark = LikeDislike.objects.get(user=user, mem=mem)
             if old_mark.vote == -1:

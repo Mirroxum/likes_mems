@@ -27,6 +27,10 @@ class Mem(models.Model):
         verbose_name='Дата публикации',
         auto_now_add=True,
     )
+    is_favorite = models.BooleanField(
+        default=False,
+        verbose_name='Продвижение мема',
+    )
 
     class Meta:
         verbose_name = 'Мем'

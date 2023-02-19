@@ -6,7 +6,8 @@ from .models import Mem, LikeDislike
 
 @admin.register(Mem)
 class MemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'get_image', 'author', 'pub_date', 'likes')
+    list_display = ('name', 'get_image', 'author',
+                    'pub_date', 'likes', 'is_favorite')
 
     def likes(self, obj):
         return obj.likesdislikes.sum_rating()
