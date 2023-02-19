@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Sum
 
 from likes_mems.conf import MAX_LEN_MEM_NAME
 
@@ -26,10 +27,6 @@ class Mem(models.Model):
         verbose_name='Дата публикации',
         auto_now_add=True,
     )
-    likes = models.IntegerField(
-        default=0,
-        verbose_name='Количество лайков',
-    )
 
     class Meta:
         verbose_name = 'Мем'
@@ -37,4 +34,56 @@ class Mem(models.Model):
         ordering = ('pub_date',)
 
     def __str__(self):
-        return f'{self.name}. Автор: {self.author.username}. Лайки: {self.likes}'
+        return f'{self.name}. Автор:{self.author.username}.'
+
+
+class LikeDislikeManager(models.Manager):
+    use_for_related_fields = True
+
+    def likes(self):
+        return self.get_queryset().filter(vote__gt=0)
+
+    def dislikes(self):
+        return self.get_queryset().filter(vote__lt=0)
+
+    def sum_rating(self):
+        return self.get_queryset().aggregate(Sum('vote')).get('vote__sum') or 0
+
+
+class LikeDislike(models.Model):
+    LIKE = 1
+    DISLIKE = -1
+    VOTES = (
+        (DISLIKE, 'Не нравится'),
+        (LIKE, 'Нравится')
+    )
+    vote = models.SmallIntegerField(
+        verbose_name=("Голос"),
+        choices=VOTES)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name=("Пользователь")
+    )
+    mem = models.ForeignKey(
+        Mem,
+        on_delete=models.CASCADE,
+        related_name='likesdislikes',
+        verbose_name=("Мем")
+    )
+    objects = LikeDislikeManager()
+
+    class Meta:
+        verbose_name = 'Голос'
+        verbose_name_plural = 'Голоса'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'mem', ),
+                name='unique_for_user_mem'
+            ),
+        )
+
+    def __str__(self):
+        return (f'Пользователь:{self.user.username} '
+                f'поставил {self.vote} на '
+                f'мем:{self.mem}')

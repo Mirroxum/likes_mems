@@ -94,11 +94,12 @@ def create_mem_to_bd(img_data):
         for img in img_data:
             id = datetime.now().strftime('%Y_%m_%d_%M_%S_%f')
             response = requests.get(img)
-            with open(f'likes_mems\media\images\img{id}.jpg', "wb") as img_file:
+            with open(
+                    f'likes_mems/media/images/img{id}.jpg', "wb") as img_file:
                 img_file.write(response.content)
                 mem, s = Mem.objects.get_or_create(
                     name=f'Мем №{id}',
-                    image=f'\images\img{id}.jpg',
+                    image=f'/images/img{id}.jpg',
                     author=User.objects.order_by('?').first())
             if s:
                 successful += 1
