@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
 
-from likes_mems.conf import MAX_LEN_MEM_NAME
+from likes_mems.conf import (MAX_LEN_MEM_NAME,
+                             MAX_LEN_COMMUNITY_NAME,
+                             MAX_LEN_COMMUNITY_DESCRIPTION)
 
 User = get_user_model()
 
@@ -91,3 +93,16 @@ class LikeDislike(models.Model):
         return (f'Пользователь:{self.user.username} '
                 f'поставил {self.vote} на '
                 f'мем:{self.mem}')
+
+
+class Сommunity(models.Model):
+    name = models.CharField(
+        verbose_name='Название сообщества',
+        max_length=MAX_LEN_COMMUNITY_NAME,
+        unique=True
+    )
+    description = models.CharField(
+        verbose_name='Описание сообщества',
+        max_length=MAX_LEN_COMMUNITY_DESCRIPTION,
+        unique=True
+    )
