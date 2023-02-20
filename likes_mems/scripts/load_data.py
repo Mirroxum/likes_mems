@@ -22,7 +22,7 @@ ERASE_USER = False
 # установите True если хотите удалить данные о мемах:
 ERASE_MEM = False
 # Указать количество создаваемых мемов
-COUNT_MEM = 5
+COUNT_MEM = 200
 
 
 def check_tokens():

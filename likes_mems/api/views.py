@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status, viewsets
 from rest_framework.generics import get_object_or_404
@@ -10,13 +9,13 @@ from django.http import HttpResponseRedirect
 from django.db.models import Sum, F
 from rest_framework.pagination import PageNumberPagination
 
-from mems.models import Mem, LikeDislike, Сommunity
+
+from mems.models import Mem, LikeDislike, Сommunity, User
 from .serializers import MemSerializer, СommunitySerializer, UserSerializer
 from utils.random_chance import is_promote
+from .paginaton import DashboardPagination
 from likes_mems.conf import CHANCE
-
-
-User = get_user_model()
+from .permissions import PremiumUserOrAdmin
 
 
 class MemViewSet(APIView):
@@ -145,3 +144,15 @@ class CommunityViewSet(
                 user_id=user.id, сommunity_id=current_community.id)
         return Response({'success': 'Вы уcпешно подписались'
                          }, status=status.HTTP_201_CREATED)
+
+
+class DashboardViewSet(APIView, DashboardPagination):
+    permission_classes = (PremiumUserOrAdmin,)
+
+    def get(self, request):
+        mems = Mem.objects.select_related('author').annotate(sum_votes=Sum(
+            F('likesdislikes__vote'))).order_by('-sum_votes').exclude(
+                sum_votes=0)
+        page = self.paginate_queryset(mems, request, view=self)
+        serializer = MemSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)

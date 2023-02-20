@@ -1,12 +1,55 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Sum
 
 from likes_mems.conf import (MAX_LEN_MEM_NAME,
                              MAX_LEN_COMMUNITY_NAME,
-                             MAX_LEN_COMMUNITY_DESCRIPTION)
+                             MAX_LEN_COMMUNITY_DESCRIPTION,
+                             MAX_LEN_USERNAME,
+                             MAX_LEN_EMAIL,
+                             MAX_LEN_LAST_AND_FIRST_NAME)
 
-User = get_user_model()
+
+class User(AbstractUser):
+    ROLES_CHOICES = [
+        ('user', 'user'),
+        ('premiumuser', 'premiumuser'),
+    ]
+
+    username = models.CharField(
+        'Username', max_length=MAX_LEN_USERNAME, unique=True
+    )
+    first_name = models.CharField(
+        'Firstname', max_length=MAX_LEN_LAST_AND_FIRST_NAME
+    )
+    last_name = models.CharField(
+        'Lastname', max_length=MAX_LEN_LAST_AND_FIRST_NAME
+    )
+    email = models.EmailField(
+        'Email',
+        max_length=MAX_LEN_EMAIL,
+        help_text='Укажи свой e-mail.',
+        unique=True,
+    )
+    role = models.CharField(
+        'Roles', choices=ROLES_CHOICES, default='user', max_length=14
+    )
+
+    class Meta:
+        ordering = ('username',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return f'{self.username}: {self.email}'
+
+    @property
+    def is_user(self):
+        return self.role == 'user'
+
+    @property
+    def is_premium(self):
+        return self.role == 'premiumuser'
 
 
 class Mem(models.Model):

@@ -1,12 +1,27 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from django.contrib.auth.admin import UserAdmin
 
-from .models import Mem, LikeDislike, Сommunity
+from .models import Mem, LikeDislike, Сommunity, User
 
 
 class LikeDislikeInline(admin.TabularInline):
     model = LikeDislike
     extra = 1
+
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    model = User
+    list_display = (
+        'email', 'username', 'first_name', 'last_name', 'role'
+    )
+    fieldsets = (
+        (None, {'fields': (
+            'email', 'username', 'first_name', 'last_name', 'password',
+            'role',
+        )}),
+    )
 
 
 @admin.register(Mem)

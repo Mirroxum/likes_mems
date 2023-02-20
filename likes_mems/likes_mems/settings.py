@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'djoser',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +108,7 @@ DJOSER = {
     },
 }
 
+AUTH_USER_MODEL = 'mems.User'
 
 LANGUAGE_CODE = 'ru'
 

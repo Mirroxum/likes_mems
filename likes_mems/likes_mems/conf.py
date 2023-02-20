@@ -1,5 +1,9 @@
+MAX_LEN_LAST_AND_FIRST_NAME = 32  # Максимальная длина имени и фамилии
+MAX_LEN_EMAIL = 64  # Максимальная длина email
+MAX_LEN_USERNAME = 32  # Максимальная длина юзернейм
 MAX_LEN_COMMUNITY_DESCRIPTION = 1024  # Максимальная длина описания сообщества
 MAX_LEN_COMMUNITY_NAME = 64  # Максимальная длина имени сообщества
 MAX_LEN_MEM_NAME = 128  # Максимальная длина имени мема
 CHANCE = 50  # Шанс показа продвигаемых мемов в процентах от 0 до 100
 SIZE_PAGINATION = 5  # Стандартный размер пагинации
+DASBOARD_PAGINATION = 50  # Размер дашборд пагинации
