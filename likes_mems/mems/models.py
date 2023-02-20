@@ -106,3 +106,25 @@ class Сommunity(models.Model):
         max_length=MAX_LEN_COMMUNITY_DESCRIPTION,
         unique=True
     )
+    slug = models.SlugField(
+        verbose_name='Slug сообщества',
+        max_length=MAX_LEN_COMMUNITY_NAME,
+        unique=True
+    )
+    users = models.ManyToManyField(
+        User,
+        related_name='community',
+        blank=True
+    )
+    mems = models.ManyToManyField(
+        Mem,
+        related_name='community',
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = 'Мемное сообщество'
+        verbose_name_plural = 'Мемные сообщества'
+
+    def __str__(self):
+        return self.name

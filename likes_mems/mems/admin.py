@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Mem, LikeDislike
+from .models import Mem, LikeDislike, Сommunity
 
 
 class LikeDislikeInline(admin.TabularInline):
@@ -34,3 +34,9 @@ class MemAdmin(admin.ModelAdmin):
 @admin.register(LikeDislike)
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('user', 'mem', 'vote')
+
+
+@admin.register(Сommunity)
+class СommunityAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'description')
+    filter_horizontal = ('mems', 'users')
