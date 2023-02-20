@@ -40,8 +40,10 @@ class MemSkipViewSet(APIView):
 
     def get(self, request, pk):
         current_mem = get_object_or_404(Mem, pk=pk)
-        if is_promote(CHANCE) and not current_mem.is_favorite:
-            to_mem = Mem.objects.filter(is_favorite=True).order_by('?').first()
+        favorite_mems = Mem.objects.filter(is_favorite=True)
+        if (is_promote(CHANCE) and not
+                current_mem.is_favorite and favorite_mems.exists()):
+            to_mem = favorite_mems.order_by('?').first()
         else:
             to_mem = Mem.objects.annotate(sum_votes=Sum(
                 F('likesdislikes__vote'))).order_by('sum_votes', '?').first()
