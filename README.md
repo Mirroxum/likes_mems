@@ -1,2 +1,3 @@
-# likes_mems
-system for evaluating the coolness of memes
+# Мемолизатор v.Backend-5
+
+Система для просмотра и лайков самых лучших мемов.
