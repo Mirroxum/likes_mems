@@ -2,6 +2,10 @@
 
 Система для просмотра и лайков самых лучших мемов.
 
+### Стек технологий
+
+![Python](https://img.shields.io/badge/Python-blue) ![Django](https://img.shields.io/badge/Django-green) ![VK API](https://img.shields.io/badge/VK_API-blue)
+
 ### Описание задачи
 
 Давайте разработаем систему для оценки крутости мемов!
