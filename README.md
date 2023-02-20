@@ -46,5 +46,7 @@ POST /api/community/<slug>/subscribe/
 
 ```
 GET /api/swagger/
+```
+```
 GET /api/redoc/
 ```
